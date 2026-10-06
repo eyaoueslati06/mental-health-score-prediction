@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mind Check · Student Mental Health Score</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="layout">
+    <section class="form-side">
+      <header class="intro">
+        <h1>How is your mind doing?</h1>
+        <p>Answer a few questions about your studies, sleep and social media habits. Our model estimates your mental health score.</p>
+      </header>
+
+      <form id="predict-form" novalidate>
+        <fieldset>
+          <legend>About you</legend>
+          <div class="grid">
+            <label class="field">Age
+              <input type="number" name="age" min="10" max="100" step="1" placeholder="e.g. 20" required>
+            </label>
+            <label class="field">Gender
+              <select name="gender" required>
+                <option value="" disabled selected>Select</option>
+                <option>Male</option><option>Female</option>
+              </select>
+            </label>
+            <label class="field">Country
+              <input type="text" name="country" list="countries" placeholder="e.g. India" required>
+              <datalist id="countries">
+                <option value="India"><option value="USA"><option value="Canada"><option value="Australia">
+                <option value="UK"><option value="Germany"><option value="Mexico"><option value="Turkey">
+                <option value="France"><option value="Other">
+              </datalist>
+            </label>
+            <label class="field">Academic level
+              <select name="academic_level" required>
+                <option value="" disabled selected>Select</option>
+                <option>High School</option><option>Undergraduate</option><option>Graduate</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Social media</legend>
+          <div class="grid">
+            <label class="field">Most used platform
+              <select name="most_used_platform" required>
+                <option value="" disabled selected>Select</option>
+                <option>Facebook</option><option>Instagram</option><option>TikTok</option><option>YouTube</option>
+                <option>Snapchat</option><option>Twitter</option><option>LinkedIn</option><option>WhatsApp</option>
+                <option>WeChat</option><option>LINE</option><option>KakaoTalk</option><option>VKontakte</option>
+              </select>
+            </label>
+            <label class="field">Main purpose of use
+              <select name="purpose_of_use" required>
+                <option value="" disabled selected>Select</option>
+                <option>Entertainment</option><option>Education</option><option>Networking</option><option>News</option>
+              </select>
+            </label>
+            <label class="field">Daily usage (hours)
+              <input type="number" name="avg_daily_usage_hours" min="0" max="24" step="0.1" placeholder="e.g. 4.5" required>
+            </label>
+            <label class="field">Phone unlocks per day
+              <input type="number" name="daily_unlocks" min="0" step="1" placeholder="e.g. 60" required>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Daily habits</legend>
+          <div class="grid three">
+            <label class="field">Study (hours)
+              <input type="number" name="study_hours" min="0" max="24" step="0.1" placeholder="e.g. 3" required>
+            </label>
+            <label class="field">Exercise (hours)
+              <input type="number" name="physical_activity_hours" min="0" max="24" step="0.1" placeholder="e.g. 1" required>
+            </label>
+            <label class="field">Sleep (hours)
+              <input type="number" name="sleep_hours_per_night" min="0" max="24" step="0.1" placeholder="e.g. 7" required>
+            </label>
+          </div>
+
+          <div class="field">
+            <span id="stress-label">Stress level</span>
+            <div class="segmented" role="radiogroup" aria-labelledby="stress-label">
+              <label><input type="radio" name="stress_level" value="Low" required><span>Low</span></label>
+              <label><input type="radio" name="stress_level" value="Medium"><span>Medium</span></label>
+              <label><input type="radio" name="stress_level" value="High"><span>High</span></label>
+              <label><input type="radio" name="stress_level" value="Very High"><span>Very high</span></label>
+            </div>
+          </div>
+        </fieldset>
+
+        <p id="error" class="error" role="alert" hidden></p>
+        <button type="submit" id="submit-btn" class="btn">Predict my score</button>
+      </form>
+    </section>
+
+    <aside class="result-side" aria-live="polite">
+      <div class="card" id="result-card" data-state="idle">
+
+        <div class="state state-idle">
+          <div class="ring-placeholder" aria-hidden="true"></div>
+          <h2>Your score will appear here</h2>
+          <p>Fill in the form and select Predict my score.</p>
+        </div>
+
+        <div class="state state-loading">
+          <div class="spinner" aria-hidden="true"></div>
+          <h2>Analysing your answers</h2>
+          <p>This only takes a moment.</p>
+        </div>
+
+        <div class="state state-result">
+          <p class="kicker">Predicted mental health score</p>
+          <div class="gauge">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="track" cx="60" cy="60" r="54"/>
+              <circle class="bar" id="gauge-bar" cx="60" cy="60" r="54"/>
+            </svg>
+            <div class="gauge-text">
+              <span id="score-value">0.0</span>
+              <small>out of 10</small>
+            </div>
+          </div>
+          <h2 id="score-title"></h2>
+          <p id="score-text"></p>
+          <button type="button" id="reset-btn" class="btn ghost">Start over</button>
+        </div>
+
+      </div>
+      <p class="note">This is a statistical estimate, not a medical diagnosis. If you are struggling, please talk to a professional.</p>
+    </aside>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
