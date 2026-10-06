@@ -550,7 +550,139 @@ Model Saving
 
 ---
 
+## 🌐 Part 2 — Web Application
 
+In the second part of the project, the trained machine learning model was connected to a simple web application so users can enter student information and receive a predicted Mental Health Score.
+
+The application contains both a **frontend** and a **FastAPI backend**.
+
+### Frontend
+
+The frontend is built using:
+
+```text
+index.html
+style.css
+script.js
+```
+
+- `index.html` contains the structure of the prediction form.
+- `style.css` handles the visual design and layout.
+- `script.js` collects the user input, sends it to the API, and displays the predicted Mental Health Score returned by the backend.
+
+The frontend communicates with the FastAPI `/predict` endpoint using an HTTP request.
+
+---
+
+### FastAPI Backend
+
+The backend is implemented in:
+
+```text
+main.py
+```
+
+The API loads the trained machine learning pipeline:
+
+```python
+model = joblib.load("Mental_Health_Model.pkl")
+```
+
+A `StudentData` Pydantic model is used to validate incoming user data such as:
+
+- Age
+- Gender
+- Country
+- Academic level
+- Social media platform
+- Purpose of use
+- Daily usage hours
+- Daily unlocks
+- Study hours
+- Physical activity
+- Sleep hours
+- Stress level
+
+Validation rules are added using `Field` and `Literal` to ensure that the API receives valid values.
+
+The backend also recreates the `Grouped_country` feature used during model training. Countries outside the selected frequent-country list are grouped into:
+
+```text
+Other
+```
+
+---
+
+### API Endpoints
+
+The application provides two main endpoints.
+
+#### `GET /`
+
+Returns a simple welcome message confirming that the API is running.
+
+#### `POST /predict`
+
+Receives student information, converts it into the same DataFrame structure used during model training, and sends it directly to the saved machine learning pipeline:
+
+```python
+prediction = model.predict(input_row)[0]
+```
+
+The API then returns the predicted Mental Health Score as JSON.
+
+Example response:
+
+```json
+{
+  "predicted_mental_health_score": 6.78
+}
+```
+
+---
+
+### CORS
+
+`CORSMiddleware` is enabled so that the frontend can communicate with the FastAPI backend from the browser.
+
+```python
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+```
+
+---
+
+### Application Flow
+
+```text
+User enters student information
+            ↓
+        index.html
+            ↓
+         script.js
+            ↓
+      POST /predict
+            ↓
+        FastAPI API
+            ↓
+   Pydantic validation
+            ↓
+Create model input DataFrame
+            ↓
+Mental_Health_Model.pkl
+            ↓
+      Model prediction
+            ↓
+JSON prediction response
+            ↓
+Displayed on the frontend
+```
+
+This second part turns the machine learning notebook into a simple end-to-end prediction application where the trained model can be used through a browser interface.
 
 GitHub: [eyaoueslati06](https://github.com/eyaoueslati06)
 
